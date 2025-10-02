@@ -73,11 +73,16 @@ def final_video(title,time,language,multi_speaker):
     print(title + " in " + time + " second"+", "+language+", multi speaker : "+multi_speaker)
     print("--------------------------------")
 
+
+# Get the prompt text from YAML
     prompt_text = chatgpt(getyamll("short_prompt"))
 
-    # safely replace only title and time; ignore unknown placeholders
+# Only replace known placeholders (title, time). Ignore any others like {font-family}
     safe_dict = defaultdict(str, {"title": title, "time": time})
+
+# Apply formatting safely
     original_text = prompt_text.format_map(safe_dict)
+
 
     print(original_text)
     print("--------------------------------")
