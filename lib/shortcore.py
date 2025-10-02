@@ -4,6 +4,7 @@ import sys
 import re
 import requests
 from moviepy.editor import VideoFileClip, concatenate_videoclips, AudioFileClip, CompositeAudioClip
+from collections import defaultdict
 
 from lib.video_texts import getyamll,read_config_file,read_random_line
 from lib.APIss import download_file,chatgpt,translateto
@@ -71,7 +72,13 @@ def final_video(title,time,language,multi_speaker):
     print("--------------------------------")
     print(title + " in " + time + " second"+", "+language+", multi speaker : "+multi_speaker)
     print("--------------------------------")
-    original_text = chatgpt(getyamll("short_prompt")).format(title=title,time=time)
+
+    prompt_text = chatgpt(getyamll("short_prompt"))
+
+    # safely replace only title and time; ignore unknown placeholders
+    safe_dict = defaultdict(str, {"title": title, "time": time})
+    original_text = prompt_text.format_map(safe_dict)
+
     print(original_text)
     print("--------------------------------")
     download_file(read_random_line("download_list/background_music.txt"), "temp/song.mp3")
